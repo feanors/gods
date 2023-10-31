@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/emirpasic/gods/utils"
+	"github.com/feanors/gods/utils"
 )
 
 func TestListNew(t *testing.T) {

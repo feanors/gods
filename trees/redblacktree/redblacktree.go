@@ -13,8 +13,8 @@ package redblacktree
 
 import (
 	"fmt"
-	"github.com/emirpasic/gods/trees"
-	"github.com/emirpasic/gods/utils"
+	"github.com/feanors/gods/trees"
+	"github.com/feanors/gods/utils"
 )
 
 // Assert Tree implementation

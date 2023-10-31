@@ -5,7 +5,7 @@
 package binaryheap
 
 import (
-	"github.com/emirpasic/gods/containers"
+	"github.com/feanors/gods/containers"
 )
 
 // Assert Serialization implementation

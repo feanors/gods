@@ -13,8 +13,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/emirpasic/gods/lists"
-	"github.com/emirpasic/gods/utils"
+	"github.com/feanors/gods/lists"
+	"github.com/feanors/gods/utils"
 )
 
 // Assert List implementation

@@ -6,7 +6,7 @@ package hashbidimap
 
 import (
 	"encoding/json"
-	"github.com/emirpasic/gods/containers"
+	"github.com/feanors/gods/containers"
 )
 
 // Assert Serialization implementation

@@ -7,7 +7,7 @@ package treemap
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/emirpasic/gods/utils"
+	"github.com/feanors/gods/utils"
 	"strings"
 	"testing"
 )

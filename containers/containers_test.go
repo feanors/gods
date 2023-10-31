@@ -8,7 +8,7 @@ package containers
 
 import (
 	"fmt"
-	"github.com/emirpasic/gods/utils"
+	"github.com/feanors/gods/utils"
 	"strings"
 	"testing"
 )
