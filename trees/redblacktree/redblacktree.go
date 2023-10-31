@@ -535,6 +535,16 @@ func (node *Node) maximumNode() *Node {
 	return node
 }
 
+func (node *Node) MaximumNode() *Node {
+	if node == nil {
+		return nil
+	}
+	for node.Right != nil {
+		node = node.Right
+	}
+	return node
+}
+
 func (tree *Tree) deleteCase1(node *Node) {
 	if node.Parent == nil {
 		return
