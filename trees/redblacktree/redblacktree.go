@@ -101,6 +101,50 @@ func (tree *Tree) Put(key interface{}, value interface{}) {
 	tree.size++
 }
 
+// PutAndReturn inserts node into the tree and returns the inserted node.
+// Key should adhere to the comparator's type assertion, otherwise method panics.
+func (tree *Tree) PutAndReturn(key interface{}, value interface{}) *Node {
+	var insertedNode *Node
+	if tree.Root == nil {
+		// Assert key is of comparator's type for initial tree
+		tree.Comparator(key, key)
+		tree.Root = &Node{Key: key, Value: value, color: red}
+		insertedNode = tree.Root
+	} else {
+		node := tree.Root
+		loop := true
+		for loop {
+			compare := tree.Comparator(key, node.Key)
+			switch {
+			case compare == 0:
+				node.Key = key
+				node.Value = value
+				return nil
+			case compare < 0:
+				if node.Left == nil {
+					node.Left = &Node{Key: key, Value: value, color: red}
+					insertedNode = node.Left
+					loop = false
+				} else {
+					node = node.Left
+				}
+			case compare > 0:
+				if node.Right == nil {
+					node.Right = &Node{Key: key, Value: value, color: red}
+					insertedNode = node.Right
+					loop = false
+				} else {
+					node = node.Right
+				}
+			}
+		}
+		insertedNode.Parent = node
+	}
+	tree.insertCase1(insertedNode)
+	tree.size++
+	return insertedNode
+}
+
 // Get searches the node in the tree by key and returns its value or nil if key is not found in tree.
 // Second return parameter is true if key was found, otherwise false.
 // Key should adhere to the comparator's type assertion, otherwise method panics.
@@ -123,6 +167,37 @@ func (tree *Tree) GetNode(key interface{}) *Node {
 func (tree *Tree) Remove(key interface{}) {
 	var child *Node
 	node := tree.lookup(key)
+	if node == nil {
+		return
+	}
+	if node.Left != nil && node.Right != nil {
+		pred := node.Left.maximumNode()
+		node.Key = pred.Key
+		node.Value = pred.Value
+		node = pred
+	}
+	if node.Left == nil || node.Right == nil {
+		if node.Right == nil {
+			child = node.Left
+		} else {
+			child = node.Right
+		}
+		if node.color == black {
+			node.color = nodeColor(child)
+			tree.deleteCase1(node)
+		}
+		tree.replaceNode(node, child)
+		if node.Parent == nil && child != nil {
+			child.color = black
+		}
+	}
+	tree.size--
+}
+
+// RemoveNode remove the node from the tree by node.
+// Key should adhere to the comparator's type assertion, otherwise method panics.
+func (tree *Tree) RemoveNode(node *Node) {
+	var child *Node
 	if node == nil {
 		return
 	}
