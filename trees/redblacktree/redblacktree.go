@@ -230,6 +230,87 @@ func (tree *Tree) RemoveNode(node *Node) (*Node, bool) {
 	return predNode, fullNodeFlag
 }
 
+// RemoveNodeWithSwap remove the node from the tree by node, without affecting external references to the nodes.
+// Key should adhere to the comparator's type assertion, otherwise method panics.
+func (tree *Tree) RemoveNodeWithSwap(node *Node) {
+	var child *Node
+	if node == nil {
+		return
+	}
+	if node.Left != nil && node.Right != nil {
+		pred := node.Left.maximumNode()
+		temp := &Node{Parent: pred.Parent, color: pred.color, Right: pred.Right, Left: pred.Left}
+
+		// handle parent of node
+		if node.Parent != nil {
+			if node.Parent.Left == node {
+				node.Parent.Left = pred
+			}
+			if node.Parent.Right == node {
+				node.Parent.Right = pred
+			}
+			pred.Parent = node.Parent
+		} else {
+			pred.Parent = nil
+		}
+
+		// handle left right parents of node
+		if node.Left != pred {
+			node.Left.Parent = pred
+		} else {
+			node.Parent = pred
+		}
+		node.Right.Parent = pred
+
+		if node.Left != pred {
+			pred.Left = node.Left
+		} else {
+			pred.Left = node
+		}
+		if node.Right != pred {
+			pred.Right = node.Right
+		} else {
+			pred.Right = node
+		}
+
+		if tree.Root == node {
+			tree.Root = pred
+		}
+
+		if temp.Parent != node {
+			if temp.Parent.Left == pred {
+				temp.Parent.Left = node
+			} else {
+				temp.Parent.Right = node
+			}
+			node.Parent = temp.Parent
+		}
+		node.Right = nil
+		node.Left = temp.Left
+		if node.Left != nil {
+			node.Left.Parent = node
+		}
+		pred.color = node.color
+		node.color = temp.color
+	}
+	if node.Left == nil || node.Right == nil {
+		if node.Right == nil {
+			child = node.Left
+		} else {
+			child = node.Right
+		}
+		if node.color == black {
+			node.color = nodeColor(child)
+			tree.deleteCase1(node)
+		}
+		tree.replaceNode(node, child)
+		if node.Parent == nil && child != nil {
+			child.color = black
+		}
+	}
+	tree.size--
+}
+
 // Empty returns true if tree does not contain any nodes
 func (tree *Tree) Empty() bool {
 	return tree.size == 0
