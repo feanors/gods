@@ -196,13 +196,17 @@ func (tree *Tree) Remove(key interface{}) {
 
 // RemoveNode remove the node from the tree by node.
 // Key should adhere to the comparator's type assertion, otherwise method panics.
-func (tree *Tree) RemoveNode(node *Node) {
+func (tree *Tree) RemoveNode(node *Node) (*Node, bool) {
+	fullNodeFlag := false
+	var predNode *Node
 	var child *Node
 	if node == nil {
-		return
+		return predNode, fullNodeFlag
 	}
 	if node.Left != nil && node.Right != nil {
+		fullNodeFlag = true
 		pred := node.Left.maximumNode()
+		predNode = pred
 		node.Key = pred.Key
 		node.Value = pred.Value
 		node = pred
@@ -223,6 +227,7 @@ func (tree *Tree) RemoveNode(node *Node) {
 		}
 	}
 	tree.size--
+	return predNode, fullNodeFlag
 }
 
 // Empty returns true if tree does not contain any nodes
